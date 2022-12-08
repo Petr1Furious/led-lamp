@@ -65,6 +65,13 @@ void Lamp::run() {
     }
   }
 
+  if (button.hasClicks(2)) {
+    m_current_effect++;
+    if (m_current_effect == EFFECTS_COUNT) {
+      m_current_effect = 0;
+    }
+  }
+
   if (button.step(0)) {
     m_brightness = constrain(m_brightness + (m_brightness_change_direction ? 1 : -1), MIN_BRIGHTNESS, MAX_BRIGHTNESS);
     LEDS.setBrightness(m_brightness);
@@ -81,4 +88,5 @@ void Lamp::run() {
     m_effects[m_current_effect]->action_tick(true);
   }
   m_effects[m_current_effect]->tick();
+  LEDS.show();
 }

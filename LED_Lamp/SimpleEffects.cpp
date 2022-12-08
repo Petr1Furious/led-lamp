@@ -1,4 +1,5 @@
 #include "SimpleEffects.h"
+#include "Lamp.h"
 #include <EEPROM.h>
 
 void StaticColorEffect::init(size_t led_count) {
@@ -7,6 +8,8 @@ void StaticColorEffect::init(size_t led_count) {
 
 void StaticColorEffect::tick() {
   // TODO
+  // for demonstration purposes:
+  m_lamp->set_color_led(0, Lamp::calc_color(255, 0, 0));
 }
 
 void StaticColorEffect::action_tick(bool reverse) {
@@ -19,6 +22,8 @@ void FlowingColorEffect::init(size_t led_count) {
 
 void FlowingColorEffect::tick() {
   // TODO
+  // for demonstration purposes:
+  m_lamp->set_color_led(0, Lamp::calc_color(0, 255, 0));
 }
 
 void FlowingColorEffect::action_tick(bool reverse) {
@@ -31,6 +36,8 @@ void WarmWhiteEffect::init(size_t led_count) {
 
 void WarmWhiteEffect::tick() {
   // TODO
+  // for demonstration purposes:
+  m_lamp->set_color_led(0, Lamp::calc_color(0, 0, 255));
 }
 
 void WarmWhiteEffect::action_tick(bool reverse) {
