@@ -1,34 +1,41 @@
-#ifndef LAMP_H
-#define LAMP_H
+#pragma once
 
+#include <VirtualButton.h>
 #include <FastLED.h>
+
+class Effect;
+
+#include "Effect.h"
 #include "settings.h"
 
 class Lamp {
 public:
   Lamp();
+
   void init();
+
   void run();
+
+  static uint32_t calc_color(uint8_t red, uint8_t green, uint8_t blue);
+
+  void set_color_led(size_t idx, uint32_t color);
+
+  void set_color_leds(uint32_t color);
+
+  void set_colors_leds(uint32_t* colors);
+
 private:
-  int32_t calc_color(int32_t red, int32_t green, int32_t blue);
-  void set_color_led(uint8_t idx, int32_t color);
-  void set_color_leds(int32_t color);
-  void set_colors_leds(int32_t* colors);
-  void apply_mode();
-  // Тут еще дополнительные методы
+  CRGB leds[LED_STRIP_LENGTH];
 
-  uint8_t m_button_pin = button_pin;
-  uint8_t m_led_pin = led_pin;
-  int16_t m_led_size = led_size;
-  int16_t m_strips_size = strips_size;
+  VButton button;
+
   uint8_t m_brightness;
-  uint8_t m_current_mode;
-  uint8_t m_warm_level;
-  int32_t m_overflowing_colors_step;
-  int32_t m_overflowing_colors_counter;
-  int32_t m_static_color_counter;
-  bool m_white_mode = false;
-  CRGB leds[led_size];
-};
 
-#endif
+  bool m_brightness_change_direction;
+
+  bool m_on;
+
+  Effect* m_effects[EFFECTS_COUNT];
+
+  uint8_t m_current_effect;
+};
