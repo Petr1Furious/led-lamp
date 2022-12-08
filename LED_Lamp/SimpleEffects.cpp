@@ -3,27 +3,30 @@
 #include <EEPROM.h>
 
 void StaticColorEffect::init(size_t led_count) {
-  m_static_color_counter = constrain(((uint16_t)EEPROM.read(4) << 8) + (uint16_t)EEPROM.read(5), 0, (3 << 8) - 1);
+  EEPROM.get(4, m_static_color_counter);
+  m_static_color_counter = constrain(m_static_color_counter, 0, (3 << 8) - 1);
 }
 
 void StaticColorEffect::tick() {
   // TODO
   // for demonstration purposes:
-  m_lamp->set_color_led(0, Lamp::calc_color(255, 0, 0));
+  m_lamp->set_color_leds(Lamp::calc_color(255, just_for_testing, just_for_testing));
 }
 
 void StaticColorEffect::action_tick(bool reverse) {
   // TODO
+  just_for_testing += reverse ? -1 : 1;
 }
 
 void FlowingColorEffect::init(size_t led_count) {
-  m_overflowing_colors_counter = constrain(((uint16_t)EEPROM.read(6) << 8) + (uint16_t)EEPROM.read(7), 0, (3 << 8) - 1);
+  EEPROM.get(6, m_overflowing_colors_counter);
+  m_overflowing_colors_counter = constrain(m_overflowing_colors_counter, 0, (3 << 8) - 1);
 }
 
 void FlowingColorEffect::tick() {
   // TODO
   // for demonstration purposes:
-  m_lamp->set_color_led(0, Lamp::calc_color(0, 255, 0));
+  m_lamp->set_color_leds(0x00FF00);
 }
 
 void FlowingColorEffect::action_tick(bool reverse) {
@@ -31,13 +34,13 @@ void FlowingColorEffect::action_tick(bool reverse) {
 }
 
 void WarmWhiteEffect::init(size_t led_count) {
-  m_warm_level = constrain(EEPROM.read(8), 0, 255);
+  m_warm_level = EEPROM.read(8);
 }
 
 void WarmWhiteEffect::tick() {
   // TODO
   // for demonstration purposes:
-  m_lamp->set_color_led(0, Lamp::calc_color(0, 0, 255));
+  m_lamp->set_color_leds(0x0000FF);
 }
 
 void WarmWhiteEffect::action_tick(bool reverse) {

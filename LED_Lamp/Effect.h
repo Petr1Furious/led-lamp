@@ -8,7 +8,8 @@ class Lamp;
 
 class Effect {
 public:
-  Effect(Lamp* lamp) : m_lamp(lamp) {}
+  Effect(Lamp* lamp)
+    : m_lamp(lamp) {}
 
   virtual void init(size_t led_count) = 0;
 

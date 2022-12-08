@@ -4,7 +4,8 @@
 
 class StaticColorEffect : public Effect {
 public:
-  StaticColorEffect(Lamp* lamp) : Effect(lamp) {};
+  StaticColorEffect(Lamp* lamp)
+    : Effect(lamp){};
 
   void init(size_t led_count) override;
 
@@ -14,11 +15,13 @@ public:
 
 private:
   uint16_t m_static_color_counter;
+  uint8_t just_for_testing = 0;
 };
 
 class FlowingColorEffect : public Effect {
 public:
-  FlowingColorEffect(Lamp* lamp) : Effect(lamp) {}
+  FlowingColorEffect(Lamp* lamp)
+    : Effect(lamp) {}
 
   void init(size_t led_count) override;
 
@@ -32,7 +35,8 @@ private:
 
 class WarmWhiteEffect : public Effect {
 public:
-  WarmWhiteEffect(Lamp* lamp) : Effect(lamp) {}
+  WarmWhiteEffect(Lamp* lamp)
+    : Effect(lamp) {}
 
   void init(size_t led_count) override;
 
