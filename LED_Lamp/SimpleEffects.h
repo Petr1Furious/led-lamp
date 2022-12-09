@@ -14,8 +14,7 @@ public:
   void action_tick(bool reverse) override;
 
 private:
-  uint16_t m_static_color_counter;
-  uint8_t just_for_testing = 0;
+  int16_t m_hue_counter;
 };
 
 class FlowingColorEffect : public Effect {

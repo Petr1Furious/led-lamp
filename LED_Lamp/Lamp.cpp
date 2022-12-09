@@ -40,6 +40,22 @@ uint32_t Lamp::calc_color(uint8_t red, uint8_t green, uint8_t blue) {
   return ((uint32_t)red << 16) + ((uint32_t)green << 8) + (uint32_t)blue;
 }
 
+uint32_t Lamp::get_hue(uint16_t counter) {
+  if (counter < (1 << 8)) {
+    return 0xFF0000 + ((uint32_t)counter << 8);
+  } else if (counter < (2 << 8)) {
+    return 0x00FF00 + ((uint32_t)((2 << 8) - counter - 1) << 16);
+  } else if (counter < (3 << 8)) {
+    return 0x00FF00 + (uint32_t)(counter - (2 << 8));
+  } else if (counter < (4 << 8)) {
+    return 0x0000FF + ((uint32_t)((4 << 8) - counter - 1) << 8);
+  } else if (counter < (5 << 8)) {
+    return 0x0000FF + ((uint32_t)(counter - (4 << 8)) << 16);
+  } else {
+    return 0xFF0000 + (uint32_t)((6 << 8) - counter - 1);
+  }
+}
+
 void Lamp::set_color_led(size_t idx, uint32_t color) {
   leds[idx] = color;
 }

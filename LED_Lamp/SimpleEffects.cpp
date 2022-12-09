@@ -3,19 +3,24 @@
 #include <EEPROM.h>
 
 void StaticColorEffect::init(size_t led_count) {
-  EEPROM.get(4, m_static_color_counter);
-  m_static_color_counter = constrain(m_static_color_counter, 0, (3 << 8) - 1);
+  EEPROM.get(4, m_hue_counter);
+  m_hue_counter = constrain(m_hue_counter, 0, (6 << 8) - 1);
 }
 
 void StaticColorEffect::tick() {
-  // TODO
-  // for demonstration purposes:
-  m_lamp->set_color_leds(Lamp::calc_color(255, just_for_testing, just_for_testing));
+  m_lamp->set_color_leds(Lamp::get_hue(m_hue_counter));
 }
 
 void StaticColorEffect::action_tick(bool reverse) {
-  // TODO
-  just_for_testing += reverse ? -1 : 1;
+  m_hue_counter += reverse ? -(int16_t)STEP_TIMEOUT / 3 : STEP_TIMEOUT / 3;
+  EEPROM.put(4, m_hue_counter);
+
+  if (m_hue_counter >= (6 << 8)) {
+    m_hue_counter -= 6 << 8;
+  }
+  if (m_hue_counter < 0) {
+    m_hue_counter += (6 << 8);
+  }
 }
 
 void FlowingColorEffect::init(size_t led_count) {

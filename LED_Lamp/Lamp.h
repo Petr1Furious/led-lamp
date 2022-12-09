@@ -18,6 +18,8 @@ public:
 
   static uint32_t calc_color(uint8_t red, uint8_t green, uint8_t blue);
 
+  static uint32_t get_hue(uint16_t counter);
+
   void set_color_led(size_t idx, uint32_t color);
 
   void set_color_leds(uint32_t color);
