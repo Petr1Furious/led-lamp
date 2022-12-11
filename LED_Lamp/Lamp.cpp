@@ -1,6 +1,7 @@
 #include <EEPROM.h>
 
 #include "SimpleEffects.h"
+#include "ComplexEffects.h"
 #include "Lamp.h"
 
 Lamp::Lamp() {
@@ -27,6 +28,7 @@ void Lamp::init() {
   m_effects[0] = new StaticColorEffect(this);
   m_effects[1] = new FlowingColorEffect(this);
   m_effects[2] = new WarmWhiteEffect(this);
+  m_effects[3] = new RainbowEffect(this);
 
   for (size_t i = 0; i < EFFECTS_COUNT; i++) {
     m_effects[i]->init(LED_STRIP_LENGTH);
@@ -34,6 +36,7 @@ void Lamp::init() {
 
   button.setHoldTimeout(HOLD_TIMEOUT);
   button.setStepTimeout(STEP_TIMEOUT);
+  m_last_tick = millis();
 }
 
 uint32_t Lamp::calc_color(uint8_t red, uint8_t green, uint8_t blue) {
@@ -123,7 +126,10 @@ void Lamp::run() {
     if (button.step(2)) {
       m_effects[m_current_effect]->action_tick(true);
     }
-    m_effects[m_current_effect]->tick();
+    if (millis() - m_last_tick >= STEP_TIMEOUT) {
+      m_effects[m_current_effect]->tick();
+      m_last_tick = millis();
+    }
   }
 
   LEDS.show();
