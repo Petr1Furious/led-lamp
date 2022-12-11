@@ -9,13 +9,13 @@ void RainbowEffect::init(size_t led_count) {
 
 void RainbowEffect::tick() {
   for (size_t i = 0; i < LED_STRIP_LENGTH; ++i) {
-    m_lamp->set_color_led(Lamp::get_hue(m_rainbow_counter));
+    m_lamp->set_color_led(i, Lamp::get_hue(m_rainbow_counter));
     m_rainbow_counter += m_speed;
-    if (m_hue_counter >= (6 << 8)) {
-      m_hue_counter -= 6 << 8;
+    if (m_rainbow_counter >= (6 << 8)) {
+      m_rainbow_counter -= 6 << 8;
     }
-    if (m_hue_counter < 0) {
-      m_hue_counter += (6 << 8);
+    if (m_rainbow_counter < 0) {
+      m_rainbow_counter += (6 << 8);
     }
   }
 }

@@ -47,11 +47,11 @@ void FlowingColorEffect::tick() {
   //   m_blue = constrain(m_blue - m_speed, 0, 255);
   // }
   m_overflowing_colors_counter += STEP_TIMEOUT / 3;
-  if (m_hue_counter >= (6 << 8)) {
-    m_hue_counter -= 6 << 8;
+  if (m_overflowing_colors_counter >= (6 << 8)) {
+    m_overflowing_colors_counter -= 6 << 8;
   }
-  if (m_hue_counter < 0) {
-    m_hue_counter += (6 << 8);
+  if (m_overflowing_colors_counter < 0) {
+    m_overflowing_colors_counter += (6 << 8);
   }
   m_lamp->set_color_leds(Lamp::get_hue(m_overflowing_colors_counter));
 }
