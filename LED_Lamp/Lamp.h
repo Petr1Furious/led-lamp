@@ -40,4 +40,8 @@ private:
   Effect* m_effects[EFFECTS_COUNT];
 
   uint8_t m_current_effect;
+
+  uint32_t m_last_tick;
 };
+
+// 

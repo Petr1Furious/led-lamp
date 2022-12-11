@@ -29,7 +29,11 @@ public:
   void action_tick(bool reverse) override;
 
 private:
-  uint32_t m_overflowing_colors_counter;
+  int16_t m_overflowing_colors_counter;
+  int16_t m_speed;
+  // uint8_t m_red;
+  // uint8_t m_green;
+  // uint8_t m_blue;
 };
 
 class WarmWhiteEffect : public Effect {
@@ -44,5 +48,5 @@ public:
   void action_tick(bool reverse) override;
 
 private:
-  uint8_t m_warm_level;
+  int16_t m_warm_level;
 };

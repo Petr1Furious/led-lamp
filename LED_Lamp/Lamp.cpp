@@ -1,7 +1,7 @@
 #include <EEPROM.h>
 
 #include "SimpleEffects.h"
-#include "ComplexEffects.h"
+#include "RainbowEffect.h"
 #include "Lamp.h"
 
 Lamp::Lamp() {
