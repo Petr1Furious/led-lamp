@@ -43,11 +43,11 @@ void WarmWhiteEffect::init(size_t led_count) {
 }
 
 void WarmWhiteEffect::tick() {
-  // TODO
-  // for demonstration purposes:
-  m_lamp->set_color_leds(0x0000FF);
+  m_lamp->set_color_leds(Lamp::calc_color(255, m_warm_level, m_warm_level));
 }
 
 void WarmWhiteEffect::action_tick(bool reverse) {
-  // TODO
+  m_warm_level += reverse ? -(int16_t)STEP_TIMEOUT / 3 : STEP_TIMEOUT / 3;
+  m_warm_level = constrain(m_warm_level, 0, 255);
+  EEPROM.put(8, m_warm_level);
 }
