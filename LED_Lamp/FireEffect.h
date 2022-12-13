@@ -17,9 +17,9 @@ private:
   const uint8_t RED_GRADIENT = 230;
   const uint8_t GREEN_GRADIENT = 24;
   const int8_t GRADIENT_RANGE = 10;
-  const uint8_t MAX_GREEN_INCREASE = 150;
+  const uint8_t MAX_GREEN_INCREASE = 120;
   const uint8_t FIRE_SOURCE_SIZE = LED_STRIP_LENGTH / 3 + 1;
-  const uint16_t MAX_FIRE_DELAY = 500;
+  const uint16_t MAX_FIRE_DELAY = 350;
 
   uint8_t m_target_fire_height = 0;
   uint8_t m_cur_fire_height = 0;
