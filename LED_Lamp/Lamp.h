@@ -6,7 +6,7 @@
 class Effect;
 
 #include "Effect.h"
-#include "settings.h"
+#include "Settings.h"
 
 class Lamp {
 public:
@@ -20,9 +20,13 @@ public:
 
   static uint32_t get_hue(uint16_t counter);
 
+  static int16_t rand_int(int16_t l, int16_t r);
+
   void set_color_led(size_t idx, uint32_t color);
 
   void set_color_leds(uint32_t color);
+
+  void clear_leds();
 
   void set_colors_leds(uint32_t* colors);
 
@@ -42,6 +46,6 @@ private:
   uint8_t m_current_effect;
 
   uint32_t m_last_tick;
-};
 
-// 
+  uint32_t m_switch_time;
+};

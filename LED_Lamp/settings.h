@@ -3,7 +3,7 @@
 #define DEBUG_MODE
 
 // Lamp class
-constexpr uint8_t EFFECTS_COUNT = 3;
+constexpr uint8_t EFFECTS_COUNT = 6;
 constexpr uint16_t HOLD_TIMEOUT = 500;
 constexpr uint16_t STEP_TIMEOUT = 10;
 #define VB_DEB 20
@@ -27,3 +27,4 @@ constexpr uint16_t POWER_LIMIT = 500;
 
 // Other
 constexpr uint8_t BUTTON_PIN = 13;
+constexpr uint16_t SMOOTH_TRANSITION_PERIOD = 500;

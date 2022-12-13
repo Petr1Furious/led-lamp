@@ -1,7 +1,10 @@
 #include <EEPROM.h>
+#include <time.h>
 
 #include "SimpleEffects.h"
 #include "RainbowEffect.h"
+#include "PurpleFirefliesEffect.h"
+#include "FireEffect.h"
 #include "Lamp.h"
 
 Lamp::Lamp() {
@@ -16,6 +19,8 @@ void Lamp::init() {
     LEDS.setMaxPowerInVoltsAndMilliamps(5, POWER_LIMIT / LED_STRIPS_COUNT);
   }
 
+  srand(time(NULL));
+
   pinMode(BUTTON_PIN, INPUT);
 
   m_on = EEPROM.read(0);
@@ -29,6 +34,8 @@ void Lamp::init() {
   m_effects[1] = new FlowingColorEffect(this);
   m_effects[2] = new WarmWhiteEffect(this);
   m_effects[3] = new RainbowEffect(this);
+  m_effects[4] = new PurpleFirefliesEffect(this);
+  m_effects[5] = new FireEffect(this);
 
   for (size_t i = 0; i < EFFECTS_COUNT; i++) {
     m_effects[i]->init(LED_STRIP_LENGTH);
@@ -59,6 +66,10 @@ uint32_t Lamp::get_hue(uint16_t counter) {
   }
 }
 
+int16_t Lamp::rand_int(int16_t l, int16_t r) {
+  return l + rand() % (r - l + 1);
+}
+
 void Lamp::set_color_led(size_t idx, uint32_t color) {
   leds[idx] = color;
 }
@@ -75,21 +86,29 @@ void Lamp::set_colors_leds(uint32_t* colors) {
   }
 }
 
+void Lamp::clear_leds() {
+  set_color_leds(0);
+}
+
 void Lamp::run() {
   button.poll(digitalRead(BUTTON_PIN));
 
   if (button.hasClicks(1)) {
     m_on = !m_on;
-    if (m_on) {
-      LEDS.setBrightness(m_brightness);
-    } else {
-      LEDS.setBrightness(0);
-    }
+    m_switch_time = millis();
 
     EEPROM.write(0, m_on);
   }
 
   if (m_on) {
+    LEDS.setBrightness(millis() - m_switch_time > SMOOTH_TRANSITION_PERIOD ? m_brightness :
+    map(millis() - m_switch_time, 0, SMOOTH_TRANSITION_PERIOD, 0, m_brightness));
+  } else {
+    LEDS.setBrightness(millis() - m_switch_time > SMOOTH_TRANSITION_PERIOD ? 0 :
+    map(millis() - m_switch_time, 0, SMOOTH_TRANSITION_PERIOD, m_brightness, 0));
+  }
+  
+  if (m_on || millis() - m_switch_time <= SMOOTH_TRANSITION_PERIOD) {
     if (button.hasClicks(2)) {
       m_current_effect++;
       if (m_current_effect == EFFECTS_COUNT) {

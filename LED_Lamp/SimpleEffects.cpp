@@ -1,5 +1,6 @@
 #include "SimpleEffects.h"
 #include "Lamp.h"
+#include "TemperatureToColor.h"
 #include <EEPROM.h>
 
 void StaticColorEffect::init(size_t led_count) {
@@ -24,53 +25,61 @@ void StaticColorEffect::action_tick(bool reverse) {
 }
 
 void FlowingColorEffect::init(size_t led_count) {
-  // EEPROM.get(6, m_overflowing_colors_counter);
-  m_overflowing_colors_counter = constrain(m_overflowing_colors_counter, 0, (3 << 8) - 1);
-  EEPROM.get(9, m_speed);
-  // m_red = 255;
-  // m_green = 0;
-  // m_blue = 0;
+  EEPROM.get(6, m_flowing_colors_counter);
+  m_flowing_colors_counter = constrain(m_flowing_colors_counter, 0, (6 << 8) - 1);
+  m_last_save = millis();
+
+  EEPROM.get(8, m_speed);
+  m_speed = constrain(m_speed, 1, STEP_TIMEOUT);
 }
 
 void FlowingColorEffect::tick() {
-  // if (m_red == 255 && m_green < 255) {
-  //   m_green = constrain(m_green + m_speed, 0, 255);
-  // } else if (m_green == 255 && m_red > 0) {
-  //   m_red = constrain(m_red - m_speed, 0, 255);
-  // } else if (m_green == 255 && m_blue < 255) {
-  //   m_blue = constrain(m_blue + m_speed, 0, 255);
-  // } else if (m_blue == 255 && m_green > 0) {
-  //   m_green = constrain(m_green - m_speed, 0, 255);
-  // } else if (m_blue == 255 && m_red < 255) {
-  //   m_red = constrain(m_red + m_speed, 0, 255);
-  // } else if (m_red == 255 && m_blue > 0) {
-  //   m_blue = constrain(m_blue - m_speed, 0, 255);
-  // }
-  m_overflowing_colors_counter += STEP_TIMEOUT / 3;
-  if (m_overflowing_colors_counter >= (6 << 8)) {
-    m_overflowing_colors_counter -= 6 << 8;
+  m_flowing_colors_counter += m_speed;
+  if (m_flowing_colors_counter >= (6 << 8)) {
+    m_flowing_colors_counter -= 6 << 8;
   }
-  if (m_overflowing_colors_counter < 0) {
-    m_overflowing_colors_counter += (6 << 8);
+  m_lamp->set_color_leds(Lamp::get_hue(m_flowing_colors_counter));
+
+  if (millis() - m_last_save >= 250) {
+    m_last_save = millis();
+    EEPROM.put(6, m_flowing_colors_counter);
   }
-  m_lamp->set_color_leds(Lamp::get_hue(m_overflowing_colors_counter));
 }
 
 void FlowingColorEffect::action_tick(bool reverse) {
-  m_speed += reverse ? -(int16_t)STEP_TIMEOUT / 3 : STEP_TIMEOUT / 3;
-  EEPROM.put(9, m_speed);
+  m_buffer += reverse ? -1 : 1;
+
+  if (m_buffer == -1) {
+    m_buffer = MAX_BUFFER_SIZE - 1;
+    m_speed = max(1, m_speed - 1);
+  }
+  if (m_buffer == MAX_BUFFER_SIZE) {
+    m_buffer = 0;
+    m_speed = min(STEP_TIMEOUT / 2, m_speed + 1);
+  }
+
+  EEPROM.put(8, m_speed);
 }
 
 void WarmWhiteEffect::init(size_t led_count) {
-  m_warm_level = EEPROM.read(8);
+  m_color_temperature = EEPROM.read(9);
 }
 
 void WarmWhiteEffect::tick() {
-  m_lamp->set_color_leds(Lamp::calc_color(255, m_warm_level, m_warm_level));
+  m_lamp->set_color_leds(temperature_to_color[m_color_temperature]);
 }
 
 void WarmWhiteEffect::action_tick(bool reverse) {
-  m_warm_level += reverse ? -(int16_t)STEP_TIMEOUT / 3 : STEP_TIMEOUT / 3;
-  m_warm_level = constrain(m_warm_level, 0, 255);
-  EEPROM.put(8, m_warm_level);
+  m_buffer += reverse ? -1 : 1;
+
+  if (m_buffer == -1) {
+    m_buffer = MAX_BUFFER_SIZE - 1;
+    m_color_temperature = max(0, m_color_temperature - 1);
+  }
+  if (m_buffer == MAX_BUFFER_SIZE) {
+    m_buffer = 0;
+    m_color_temperature = min((int8_t)TEMPERATURE_COLORS - 1, m_color_temperature + 1);
+  }
+  
+  EEPROM.put(9, m_color_temperature);
 }

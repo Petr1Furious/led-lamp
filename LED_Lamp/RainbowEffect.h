@@ -15,5 +15,10 @@ public:
 
 private:
   int16_t m_rainbow_counter;
-  int16_t m_speed;
+  uint16_t m_last_save;
+  
+  int8_t m_speed;
+
+  const int8_t MAX_BUFFER_SIZE = 200 / STEP_TIMEOUT;
+  int8_t m_buffer = 0;
 };
