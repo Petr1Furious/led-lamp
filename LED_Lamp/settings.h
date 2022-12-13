@@ -1,6 +1,6 @@
 #pragma once
 
-#define DEBUG_MODE
+// #define DEBUG_MODE
 
 // Lamp class
 constexpr uint8_t EFFECTS_COUNT = 6;
